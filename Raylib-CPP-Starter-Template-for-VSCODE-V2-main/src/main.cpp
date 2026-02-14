@@ -1,27 +1,23 @@
 #include <raylib.h>
-#include "toppings.h"
+#include "cook.h"
 #include <ctime>
 #include <cstdlib>
 
 int main() {
-    InitWindow(800, 800, "Papa's Pizza Clone");
-
-    srand(time(nullptr));
+    InitWindow(800, 800, "Pocalypse Pizzeria");
+    SetTargetFPS(60);
 
     while(!WindowShouldClose()) {
-        // closes window on mouse click
-        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-            break; // exit game loop
-        }
-
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        DrawToppingsOnSquare();
+        DrawCookingStation();
 
         EndDrawing();
+
     }
 
     CloseWindow();
     return 0;
+    
 }

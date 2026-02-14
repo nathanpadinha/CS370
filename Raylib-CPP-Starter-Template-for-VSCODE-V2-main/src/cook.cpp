@@ -1,25 +1,60 @@
-#include "toppings.h"
+#include "cook.h"
 
-void DrawToppingsOnSquare() {
-    static bool initialized = false;
-    static Vector2 toppings[15];
+void DrawCookingStation() {
+   // Stove
+   const int stoveX = 200;
+   const int stoveY = 200;
+   const int stoveSize = 400;
 
-    const int radius = 15;
+   DrawRectangle(stoveX, stoveY, stoveSize, stoveSize, DARKGRAY);
+   DrawRectangleLines(stoveX, stoveY, stoveSize, stoveSize, BLACK);
 
-    // Random position for toppings
-    if(!initialized) {
-        for(int i = 0; i < 15; i++) {
-            toppings[i].x = GetRandomValue(200 + radius, 500 - radius);
-            toppings[i].y = GetRandomValue(200 + radius, 500 - radius);
+   // Pizza
+   Vector2 center = {
+    stoveX + stoveSize / 2.0f,
+    stoveY + stoveSize / 2.0f
+   };
+   float radius = 140.0f;
+
+   DrawCircleV(center, radius, BEIGE);
+   DrawCircleLines((int)center.x, (int)center.y, radius, BROWN);
+
+   // Timer
+   const float cookTime = 6.0f;
+
+   static float startTime = -1.0f;
+   static bool hideBox = false;
+
+   if(startTime < 0.0f) startTime = (float)GetTime();
+
+   float elapsed = (float)GetTime() - startTime;
+   float remaining = cookTime - elapsed;
+
+   if(remaining < 0.0f) remaining = 0.0f;
+
+   // Draw timer box
+   int boxW = 140;
+   int boxH = 70;
+   int boxX = 800 - boxW - 20;
+   int boxY = 20;
+
+   Rectangle boxRect = {(float)boxX, (float)boxY, (float)boxW, (float)boxH};
+
+   if(!hideBox) {
+    DrawRectangle(boxX, boxY, boxW, boxH, LIGHTGRAY);
+    DrawRectangleLines(boxX, boxY, boxW, boxH, BLACK);
+
+    if(remaining > 0.0f) {
+        int secondsLeft = (int)(remaining + 1);
+        DrawText(TextFormat("Time: %d", secondsLeft), boxX + 15, boxY + 20, 20, BLACK);
+    } else {
+        DrawText("DONE", boxX + 35, boxY + 20, 25, BLUE);
+
+        // check for mouse click inside box
+        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), boxRect)) {
+            CloseWindow(); // Box disappears
         }
-        initialized = true;
     }
+   }
 
-    // Pizza base
-    DrawRectangle(200, 200, 300, 300, BEIGE);    
-
-    // Toppings
-    for(int i = 0; i < 15; i++) {
-        DrawCircle(toppings[i].x, toppings[i].y, radius, RED);
-    }
 }
